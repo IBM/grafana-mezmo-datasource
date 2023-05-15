@@ -2,13 +2,13 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "Logdna",
-  "id": "ibmqsoftware-logdna-datasource",
+  "id": "sdague-logdna-datasource",
   "metrics": true,
   "logs": true,
   "info": {
     "description": "",
     "author": {
-      "name": "Ibm q software"
+      "name": "sdague"
     },
     "keywords": ["datasource"],
     "logos": {
@@ -27,7 +27,7 @@
   "routes": [
     {
       "path": "example",
-      "url": "https://api.us-east.logging.cloud.ibm.com",
+      "url": "{{ .JsonData.endpoint }}",
       "headers": [
         {
           "name": "servicekey",
