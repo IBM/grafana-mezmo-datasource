@@ -27,7 +27,7 @@
   "routes": [
     {
       "path": "example",
-      "url": "https://api.us-east.logging.cloud.ibm.com",
+      "url": "{{ .JsonData.endpoint }}",
       "headers": [
         {
           "name": "servicekey",
