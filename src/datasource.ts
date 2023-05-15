@@ -21,11 +21,12 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     this.url = instanceSettings.url;
   }
 
-  async doRequest(path: any, query: any) {
+  async doRequest(path: any, params?: any) {
 
     const req = {
       method: "GET",
-      url: this.url + "/example" + path
+      url: this.url + "/example" + path,
+      params
     }
     console.log(req)
     const result = await getBackendSrv().datasourceRequest(req)
@@ -38,24 +39,30 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     const from = range!.from.valueOf();
     const to = range!.to.valueOf();
 
-
     // Return a constant for each query.
-    const data = options.targets.map((target) => {
-      return new MutableDataFrame({
+    let data: any = []
+
+    Promise.all(options.targets.map(async (target) => {
+      const frame = new MutableDataFrame({
         refId: target.refId,
         fields: [
-          { name: 'Time', values: [from, to], type: FieldType.time },
-          { name: 'Value', values: [target.constant, target.constant], type: FieldType.number },
+          { name: 'time', type: FieldType.time },
+          { name: 'content', type: FieldType.string },
         ],
       });
-    });
+      const resp = await this.doRequest('/v2/export', {from, to, size: 1000, query: target.queryText });
+      resp.data?.lines?.forEach((line: any) => (
+        frame.add({time: line._ts, content: line._line })
+      ))
+      data.push(frame);
+    }));
 
     return { data };
   }
 
   async testDatasource() {
     // Implement a health check for your data source.
-    const response = await this.doRequest('/v1/config/ingestion/status', {})
+    const response = await this.doRequest('/v1/config/ingestion/status')
 
     return {
       status: response.status,
