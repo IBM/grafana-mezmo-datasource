@@ -22,7 +22,6 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   }
 
   async doRequest(path: any, params?: any) {
-
     const req = {
       method: "GET",
       url: this.url + "/example" + path,
@@ -38,26 +37,26 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     const { range } = options;
     const from = range!.from.valueOf();
     const to = range!.to.valueOf();
+    console.log("Targets", options.targets)
 
-    // Return a constant for each query.
-    let data: any = []
-
-    Promise.all(options.targets.map(async (target) => {
-      const frame = new MutableDataFrame({
-        refId: target.refId,
-        fields: [
-          { name: 'time', type: FieldType.time },
-          { name: 'content', type: FieldType.string },
-        ],
-      });
-      const resp = await this.doRequest('/v2/export', {from, to, size: 1000, query: target.queryText });
-      resp.data?.lines?.forEach((line: any) => (
-        frame.add({time: line._ts, content: line._line })
-      ))
-      data.push(frame);
-    }));
-
-    return { data };
+    const promises = options.targets.map((target) =>
+        this.doRequest('/v2/export', {from, to, size: 1000, query: target.queryText }).then((response) => {
+        const frame = new MutableDataFrame({
+          refId: target.refId,
+          fields: [
+            { name: 'time', type: FieldType.time },
+            { name: 'content', type: FieldType.string },
+          ],
+        });
+        console.log("response");
+        console.log(response);
+        response.data?.lines?.forEach((line: any) => {
+          frame.add({time: line._ts, content: line._line })
+        });
+        return frame;
+      })
+    );
+    return Promise.all(promises).then((data) => ({ data }));
   }
 
   async testDatasource() {
