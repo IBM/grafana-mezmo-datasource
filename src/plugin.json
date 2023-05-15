@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "datasource",
+  "name": "Logdna",
+  "id": "ibmqsoftware-logdna-datasource",
+  "metrics": true,
+  "logs": true,
+  "info": {
+    "description": "",
+    "author": {
+      "name": "Ibm q software"
+    },
+    "keywords": ["datasource"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": "^9.3.8",
+    "plugins": []
+  },
+  "routes": [
+    {
+      "path": "example",
+      "url": "https://api.us-east.logging.cloud.ibm.com",
+      "headers": [
+        {
+          "name": "servicekey",
+          "content": "{{ .SecureJsonData.apiKey }}"
+          }
+      ]
+    }
+  ]
+}
