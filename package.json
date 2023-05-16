@@ -15,7 +15,7 @@
     "server": "docker-compose up --build",
     "sign": "npx --yes @grafana/sign-plugin@latest"
   },
-  "author": "Ibm q software",
+  "author": "sdague",
   "license": "Apache-2.0",
   "devDependencies": {
     "@babel/core": "^7.16.7",
