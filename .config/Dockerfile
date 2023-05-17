@@ -1,4 +1,4 @@
-ARG grafana_version=latest
+ARG grafana_version=9.5.2
 ARG grafana_image=grafana-enterprise
 
 FROM grafana/${grafana_image}:${grafana_version}
