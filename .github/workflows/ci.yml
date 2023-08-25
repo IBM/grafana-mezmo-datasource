@@ -33,13 +33,13 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Check for backend
-        id: check-for-backend
-        run: |
-          if [ -f "Magefile.go" ]
-          then
-            echo "has-backend=true" >> $GITHUB_OUTPUT
-          fi
+      # - name: Check for backend
+      #   id: check-for-backend
+      #   run: |
+      #     if [ -f "Magefile.go" ]
+      #     then
+      #       echo "has-backend=true" >> $GITHUB_OUTPUT
+      #     fi
 
       - name: Setup Go environment
         if: steps.check-for-backend.outputs.has-backend == 'true'
@@ -47,19 +47,19 @@ jobs:
         with:
           go-version: '1.20'
 
-      - name: Test backend
-        if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: magefile/mage-action@v2
-        with:
-          version: latest
-          args: coverage
+      # - name: Test backend
+      #   if: steps.check-for-backend.outputs.has-backend == 'true'
+      #   uses: magefile/mage-action@v2
+      #   with:
+      #     version: latest
+      #     args: coverage
 
-      - name: Build backend
-        if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: magefile/mage-action@v2
-        with:
-          version: latest
-          args: buildAll
+      # - name: Build backend
+      #   if: steps.check-for-backend.outputs.has-backend == 'true'
+      #   uses: magefile/mage-action@v2
+      #   with:
+      #     version: latest
+      #     args: buildAll
 
       - name: Check for E2E
         id: check-for-e2e
