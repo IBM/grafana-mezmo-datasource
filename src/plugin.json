@@ -4,6 +4,7 @@
   "name": "Mezmo Datasource",
   "id": "sdague-mezmo-datasource",
   "metrics": true,
+  "logs": true,
   "info": {
     "description": "Datasource for the mezmo log service",
     "author": {
@@ -22,5 +23,17 @@
   "dependencies": {
     "grafanaDependency": ">=9.5.3",
     "plugins": []
-  }
+  },
+  "routes": [
+    {
+      "path": "example",
+      "url": "{{ .JsonData.endpoint }}",
+      "headers": [
+        {
+          "name": "servicekey",
+          "content": "{{ .SecureJsonData.apiKey }}"
+          }
+      ]
+    }
+  ]
 }

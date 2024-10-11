@@ -30,12 +30,13 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>) {
     super(instanceSettings);
     this.endpoint = instanceSettings.jsonData.endpoint;
+    this.url = instanceSettings.url;
   }
 
   async doRequest(path: any, params?: any) {
     const req = {
       method: "GET",
-      url: this.endpoint + path,
+      url: this.url + "/example" + path,
       params
     }
     const result = await getBackendSrv().datasourceRequest(req);
