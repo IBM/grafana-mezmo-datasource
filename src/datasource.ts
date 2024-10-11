@@ -78,9 +78,10 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   async testDatasource() {
     // Implement a health check for your data source.
     const response = await this.doRequest('/v1/config/ingestion/status')
+    const status = (response.status === 200) ? 'ok': 'error'
 
     return {
-      status: (response.status == 200) ? 'ok': 'error',
+      status,
       message: response.data.isIngesting
     };
   }
