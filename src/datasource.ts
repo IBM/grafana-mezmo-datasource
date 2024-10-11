@@ -80,7 +80,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     const response = await this.doRequest('/v1/config/ingestion/status')
 
     return {
-      status: response.status,
+      status: (response.status == 200) ? 'ok': 'error',
       message: response.data.isIngesting
     };
   }
