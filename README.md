@@ -1,13 +1,13 @@
-# Grafana data source plugin template
+# Mezmo Datasource Plugin for Grafana
 
-This template is a starting point for building a Data Source Plugin for Grafana.
-
-## What are Grafana data source plugins?
-
-Grafana supports a wide range of data sources, including Prometheus, MySQL, and even Datadog. There’s a good chance you can already visualize metrics from the systems you have set up. In some cases, though, you already have an in-house metrics solution that you’d like to add to your Grafana dashboards. Grafana Data Source Plugins enables integrating such solutions with Grafana.
+This datasource provides access to Mezmo (LogDNA) logs in grafana
+panels. You can build and install it yourself in your
+environment. Grafana does not accept contributions of plugins to their
+registry that talk to commercial services, unless you pay for a
+commercial grafana.com subscription, which is why this is not in the
+main grafana registry.
 
 ## Getting started
-
 
 ### Frontend
 
@@ -29,44 +29,11 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
    npm run build
    ```
 
-4. Run the tests (using Jest)
+## Build for install
 
-   ```bash
-   # Runs the tests and watches for changes, requires git init first
-   npm run test
+You can build and install this as a private plugin. To do this you must sign the plugin, privately.
 
-   # Exits after running all the tests
-   npm run test:ci
-   ```
-
-5. Spin up a Grafana instance and run the plugin inside it (using Docker)
-
-   ```bash
-   npm run server
-   ```
-
-6. Run the E2E tests (using Cypress)
-
-   ```bash
-   # Spins up a Grafana instance first that we tests against
-   npm run server
-
-   # Starts the tests
-   npm run e2e
-   ```
-
-7. Run the linter
-
-   ```bash
-   npm run lint
-
-   # or
-
-   npm run lint:fix
-   ```
-
-
-# Distributing your plugin
+## Distributing your plugin
 
 When distributing a Grafana plugin either within the community or privately the plugin must be signed so the Grafana application can verify its authenticity. This can be done with the `@grafana/sign-plugin` package.
 
@@ -88,28 +55,17 @@ Before signing a plugin for the first time please consult the Grafana [plugin si
 
 ## Signing a plugin
 
-### Using Github actions release workflow
+With signing key in hand, do the following:
 
-If the plugin is using the github actions supplied with `@grafana/create-plugin` signing a plugin is included out of the box. The [release workflow](./.github/workflows/release.yml) can prepare everything to make submitting your plugin to Grafana as easy as possible. Before being able to sign the plugin however a secret needs adding to the Github repository.
+```
+rm -rf dist
+npm run build
+GRAFANA_ACCESS_POLICY_TOKEN=XXXX npx @grafana/sign-plugin@latest --rootUrls URL_OF_YOUR_INSTALLATION
+cp -a dist/ sdague-mezmo-datasource/
 
-1. Please navigate to "settings > secrets > actions" within your repo to create secrets.
-2. Click "New repository secret"
-3. Name the secret "GRAFANA_API_KEY"
-4. Paste your Grafana Cloud API key in the Secret field
-5. Click "Add secret"
+VERSION=$(cat package.json | jq '.version' -r)
 
-#### Push a version tag
+zip sdague-mezmo-datasource-$VERSION.zip sdague-mezmo-datasource -r
+```
 
-To trigger the workflow we need to push a version tag to github. This can be achieved with the following steps:
-
-1. Run `npm version <major|minor|patch>`
-2. Run `git push origin main --follow-tags`
-
-
-## Learn more
-
-Below you can find source code for existing app plugins and other related documentation.
-
-- [Basic data source plugin example](https://github.com/grafana/grafana-plugin-examples/tree/master/examples/datasource-basic#readme)
-- [`plugin.json` documentation](https://grafana.com/developers/plugin-tools/reference-plugin-json)
-- [How to sign a plugin?](https://grafana.com/docs/grafana/latest/developers/plugins/sign-a-plugin/)
+This is now ready for installation.
